@@ -10,6 +10,7 @@ export class Event implements IEvent {
     public status: string,
     public start_time: Date,
     public end_time: Date,
+    public teacher_id: number,
     public created_at: Date,
     public updated_at: Date,
     public studentIds: number[] = []
@@ -26,10 +27,45 @@ export class Event implements IEvent {
       updates.status || this.status,
       updates.start_time || this.start_time,
       updates.end_time || this.end_time,
+      updates.teacher_id || this.teacher_id,
       updates.created_at || this.created_at,
       updates.updated_at || this.updated_at,
       updates.studentIds || this.studentIds
     );
+  }
+
+  canCreateEvent(): boolean {
+    // El evento no debe estar en el pasado
+    if (this.isPast()) {
+      return false;
+    }
+
+    // El evento debe tener un nombre válido
+    if (!this.name || this.name.trim().length === 0) {
+      return false;
+    }
+
+    //  Las fechas deben ser válidas
+    if (this.start_time >= this.end_time) {
+      return false;
+    }
+
+    //  La ubicación debe estar especificada
+    if (!this.location || this.location.trim().length === 0) {
+      return false;
+    }
+
+    //  La categoría debe estar especificada
+    if (!this.category || this.category.trim().length === 0) {
+      return false;
+    }
+
+    //  El evento no debe estar cancelado o completado
+    if (this.status === "cancelled" || this.status === "completed") {
+      return false;
+    }
+
+    return true;
   }
 
   cancel(): void {

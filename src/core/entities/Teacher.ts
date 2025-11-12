@@ -1,4 +1,5 @@
 import { ITeacher } from "../interfaces/iteacher";
+import { Event } from "./Event";
 
 export class Teacher implements ITeacher {
   constructor(
@@ -7,12 +8,56 @@ export class Teacher implements ITeacher {
     public last_name: string,
     public email: string,
     public password: string,
-    public department: string = "",
-    public phone: string = "",
     public status: "active" | "inactive" = "active",
     public created_at: Date = new Date(),
     public updated_at: Date = new Date()
   ) {}
+
+  //  Método para crear eventos
+  createEvent(
+    name: string,
+    description: string,
+    date: Date,
+    category: string,
+    location: string,
+    start_time: Date,
+    end_time: Date
+  ): Event {
+    // Validaciones antes de crear el evento
+    if (!this.canCreateEvents()) {
+      throw new Error("El tutor no está autorizado para crear eventos");
+    }
+
+    if (start_time >= end_time) {
+      throw new Error("La hora de inicio debe ser anterior a la hora de fin");
+    }
+
+    if (date < new Date()) {
+      throw new Error("No se pueden crear eventos en fechas pasadas");
+    }
+
+    // Crear y retornar el nuevo evento
+    return new Event(
+      0,
+      name,
+      description,
+      date,
+      category,
+      location,
+      "scheduled",
+      start_time,
+      end_time,
+      this.id,
+      new Date(),
+      new Date(),
+      []
+    );
+  }
+
+  //  Validar si el tutor puede crear eventos (sin departamento)
+  canCreateEvents(): boolean {
+    return this.isActive() && this.validateEmail();
+  }
 
   // Gestion de Perfil
   updateProfile(updates: Partial<Teacher>): Teacher {
@@ -22,8 +67,6 @@ export class Teacher implements ITeacher {
       updates.last_name || this.last_name,
       updates.email || this.email,
       this.password,
-      updates.department || this.department,
-      updates.phone || this.phone,
       updates.status || this.status,
       this.created_at,
       new Date()
@@ -65,11 +108,7 @@ export class Teacher implements ITeacher {
     return this.status === "active";
   }
 
-  // Validaciones
-  canCreateEvent(): boolean {
-    return this.isActive() && this.department.length > 0;
-  }
-
+  // Validaciones adicionales
   canManageAttendance(): boolean {
     return this.isActive();
   }
@@ -90,8 +129,6 @@ export class Teacher implements ITeacher {
       name: this.name,
       last_name: this.last_name,
       email: this.email,
-      department: this.department,
-      phone: this.phone,
       status: this.status,
       created_at: this.created_at,
     };
@@ -104,13 +141,12 @@ Resumen del Profesor:
 -------------------
 Nombre: ${this.getFullName()}
 Email: ${this.email}
-Departamento: ${this.department}
 Estado: ${this.status}
 Codigo: ${this.generateTeacherCode()}
     `.trim();
   }
 
-  // Metodos de Validacion de Negocio
+  // Metodos de Validacion
   isValidForRegistration(): boolean {
     return (
       this.name.length > 0 &&
@@ -130,13 +166,11 @@ Codigo: ${this.generateTeacherCode()}
     return this.id === other.id && this.email === other.email;
   }
 
-  // Metodos de Actualizacion Masiva
+  // Metodos de Actualizacion
   bulkUpdate(updates: Partial<Teacher>): void {
     if (updates.name) this.name = updates.name;
     if (updates.last_name) this.last_name = updates.last_name;
     if (updates.email) this.email = updates.email;
-    if (updates.department) this.department = updates.department;
-    if (updates.phone) this.phone = updates.phone;
     if (updates.status) this.status = updates.status;
 
     this.updated_at = new Date();

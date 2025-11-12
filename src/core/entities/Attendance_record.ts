@@ -85,7 +85,7 @@ export class Attendance_record implements IAttendance_record {
       return null;
     }
     const durationMs = this.departure_time.getTime() - this.arrival_time.getTime();
-    return Math.floor(durationMs / (1000 * 60)); // Duración en minutos
+    return Math.floor(durationMs / (1000 * 60)); 
   }
 
   // Gestion de Evidencias

@@ -254,6 +254,6 @@ MÉTRICAS:
     const diffTime = Math.abs(
       this.end_period.getTime() - this.start_period.getTime()
     );
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Días
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
   }
 }
