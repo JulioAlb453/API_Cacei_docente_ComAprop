@@ -1,4 +1,4 @@
-export interface event_report{
+export interface IEvent_report{
     id: number;
     event_id: number;
     student_id: number;

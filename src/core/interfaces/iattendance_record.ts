@@ -1,4 +1,4 @@
-export interface attendance_record{
+export interface IAttendance_record{
     id: number;
     student_id: number;
     event_id: number;
