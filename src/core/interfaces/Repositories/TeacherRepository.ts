@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { AppDataSource } from "../../../adapters/database/data-source";
+import { AppDataSource } from "../../../infraestructure/database/data-source";
 import { ITeacherRepository } from "./ITeacherRepository";
 import { Teacher } from "../../../core/entities/Teacher";
 

@@ -1,5 +1,5 @@
-import { Event } from "../../../core/entities/Event";
-import { IEventRepository } from "../../../core/interfaces/Repositories/IEventRepository";
+import { Event } from "../../../core/entities/Event"; 
+import { IEventRepository } from "../../../core/interfaces/Repositories/IEventRepository"; 
 
 export class GetTeacherEventsUseCase {
   constructor(private eventRepository: IEventRepository) {}
