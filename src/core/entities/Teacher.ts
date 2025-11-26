@@ -50,7 +50,6 @@ export class Teacher implements ITeacher {
       this.id,
       new Date(),
       new Date(),
-      []
     );
   }
 

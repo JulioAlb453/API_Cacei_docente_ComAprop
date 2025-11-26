@@ -1,6 +1,6 @@
 import { EventRepository } from "./database/repositories/EventRepository";
-import { TeacherRepository } from "../core/interfaces/Repositories/TeacherRepository";
 
+import { TeacherRepository } from "./repositories/Teacher/TeacherRepository";
 import { CreateEventUseCase } from "../service/use-cases/Events/CreateEventUseCase";
 import { GetTeacherEventsUseCase } from "../service/use-cases/Events/GetTeacherEventsUseCase";
 import { UpdateEventUseCase } from "../service/use-cases/Events/UpdateEventUseCase";
