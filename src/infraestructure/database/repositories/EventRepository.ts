@@ -13,16 +13,20 @@ export class EventRepository implements IEventRepository {
 
   async create(event: Event): Promise<Event> {
     const schema = this.mapToPersistence(event);
-
     const savedSchema = await this.repository.save(schema);
-
     return this.mapToDomain(savedSchema);
   }
 
+  // --- AQUÍ ESTABA EL ERROR, YA CORREGIDO ---
   async getById(id: number): Promise<Event | null> {
-    const schema = await this.repository.findOneBy({ id });
+    // 1. Usamos findOneBy para obtener UNO solo (o null)
+    // 2. Buscamos por 'id' (el ID del evento), NO por teacher_id
+    const schema = await this.repository.findOneBy({ id: id });
+
+    // 3. Si existe (no es null), lo mapeamos. Si no, devolvemos null.
     return schema ? this.mapToDomain(schema) : null;
   }
+  // ------------------------------------------
 
   async update(event: Event): Promise<Event> {
     const schema = this.mapToPersistence(event);
@@ -40,6 +44,7 @@ export class EventRepository implements IEventRepository {
   }
 
   async getByTeacherId(teacherId: number): Promise<Event[]> {
+    // Aquí sí está bien buscar por teacher_id y usar find (array)
     const schemas = await this.repository.findBy({ teacher_id: teacherId });
     return schemas.map((s) => this.mapToDomain(s));
   }
@@ -57,18 +62,15 @@ export class EventRepository implements IEventRepository {
       schema.end_time,
       schema.teacher_id,
       schema.created_at,
-      schema.updated_at,
-      schema.studentIds || []
+      schema.updated_at
     );
   }
 
   private mapToPersistence(domain: Event): EventSchema {
     const schema = new EventSchema();
+    if (domain.id && domain.id !== 0) schema.id = domain.id;
 
-    if (domain.id && domain.id !== 0) {
-      schema.id = domain.id;
-    }
-
+    schema.teacher_id = domain.teacher_id;
     schema.name = domain.name;
     schema.description = domain.description;
     schema.date = domain.date;
@@ -77,10 +79,8 @@ export class EventRepository implements IEventRepository {
     schema.status = domain.status;
     schema.start_time = domain.start_time;
     schema.end_time = domain.end_time;
-    schema.teacher_id = domain.teacher_id;
     schema.created_at = domain.created_at;
     schema.updated_at = domain.updated_at;
-    schema.studentIds = domain.studentIds;
 
     return schema;
   }

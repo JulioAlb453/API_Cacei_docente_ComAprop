@@ -1,6 +1,5 @@
 export interface IEvent{
     id: number;
-    studentIds: number[]; 
     name: string;
     description: string;
     date: Date;

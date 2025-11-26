@@ -13,7 +13,6 @@ export class Event implements IEvent {
     public teacher_id: number,
     public created_at: Date,
     public updated_at: Date,
-    public studentIds: number[] = []
   ) {}
 
   update(updates: Partial<Event>): Event {
@@ -30,7 +29,6 @@ export class Event implements IEvent {
       updates.teacher_id || this.teacher_id,
       updates.created_at || this.created_at,
       updates.updated_at || this.updated_at,
-      updates.studentIds || this.studentIds
     );
   }
 
@@ -86,12 +84,7 @@ export class Event implements IEvent {
     return this.date <= new Date();
   }
 
-  removeStudent(studentId: number): void {
-    this.studentIds = this.studentIds.filter((id) => id !== studentId);
-    this.updated_at = new Date();
-  }
 
-  getStudentCount(): number {
-    return this.studentIds.length;
-  }
+
+  
 }
