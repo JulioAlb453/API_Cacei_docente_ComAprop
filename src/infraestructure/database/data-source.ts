@@ -2,7 +2,8 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 
-import { EventSchema } from "./schemas/EventSchema"; 
+import { EventSchema } from "./schemas/EventSchema";
+import { StudentSchema } from "./schemas/StudentSchema";
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     
-    entities: [EventSchema], 
+    entities: [EventSchema, StudentSchema], 
     
     synchronize: true, 
     logging: false,

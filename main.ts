@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import { AppDataSource } from "./src/infraestructure/database/data-source";
 import { eventRouter } from "./src/infraestructure/Routes/eventRoutes";
+import { studentRouter } from "./src/infraestructure/Routes/studentRoutes";
 
 async function bootstrap() {
   try {
@@ -12,7 +13,8 @@ async function bootstrap() {
 
     app.use(express.json()); 
 
-    app.use("/cacei/", eventRouter);
+    app.use("/cacei/events", eventRouter);
+    app.use("/cacei/students", studentRouter);
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
