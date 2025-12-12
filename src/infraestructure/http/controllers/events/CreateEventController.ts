@@ -1,36 +1,44 @@
 import { Request, Response } from "express";
-import { CreateEventUseCase } from "../../../../service/use-cases/Events/CreateEventUseCase"; 
+import { Event } from "../../../../core/entities/Event";
+import { IEventRepository } from "../../../../core/interfaces/Repositories/IEventRepository";
 
 export class CreateEventController {
-  constructor(private createEventUseCase: CreateEventUseCase) {}
+  constructor(private eventRepository: IEventRepository) {}
 
   async run(req: Request, res: Response): Promise<void> {
     try {
       const body = req.body;
       console.log("[CreateEventController] Procesando solicitud de creación.", JSON.stringify(body));
 
-      // Validaciones HTTP básicas
-      if (!body.teacher_id || !body.name || !body.date) {
-        res.status(400).json({ error: "Faltan campos obligatorios (teacher_id, name, date)." });
+      if (!body.name || !body.date) {
+        res.status(400).json({ error: "Faltan campos obligatorios (name, date)." });
         return;
       }
 
-      // Mapeo de request a DTO (convertir strings a fechas)
-      const eventData = {
-        name: body.name,
-        description: body.description,
-        date: new Date(body.date),
-        category: body.category,
-        location: body.location,
-        start_time: new Date(body.start_time),
-        end_time: new Date(body.end_time),
-        teacherId: Number(body.teacher_id)
-      };
+      // Crear el evento directamente
+      const event = new Event(
+        0, // id se genera automáticamente
+        body.name,
+        body.description || "",
+        new Date(body.date),
+        body.category || "general",
+        body.location || "",
+        "pending", // status por defecto
+        body.start_time ? new Date(body.start_time) : new Date(),
+        body.end_time ? new Date(body.end_time) : new Date(),
+        body.teacher_id ? Number(body.teacher_id) : 1,
+        new Date(),
+        new Date()
+      );
 
-      const result = await this.createEventUseCase.execute(eventData);
+      const result = await this.eventRepository.create(event);
 
       console.log(`[CreateEventController] Evento creado con ID: ${result.id}`);
-      res.status(201).json(result);
+      res.status(201).json({
+        success: true,
+        id: result.id,
+        data: result
+      });
 
     } catch (error) {
       console.error(`[CreateEventController] Error: ${(error as Error).message}`);

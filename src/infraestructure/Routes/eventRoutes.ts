@@ -9,7 +9,7 @@ import {
 
 const eventRouter = Router();
 
-eventRouter.post("event/", createEventController.run.bind(createEventController));
+eventRouter.post("/", createEventController.run.bind(createEventController));
 
 eventRouter.get(
   "/teacher/:teacherId",

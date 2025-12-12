@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
 
-import { EventSchema } from "./schemas/EventSchema";
+import { EventSchema } from "./schemas/EventSchema"; 
 import { StudentSchema } from "./schemas/StudentSchema";
 import { AttendanceRecordSchema } from "./schemas/AttendanceRecordSchema";
 

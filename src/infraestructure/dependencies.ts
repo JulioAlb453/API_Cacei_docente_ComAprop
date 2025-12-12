@@ -39,10 +39,11 @@ export const updateEventUseCase = new UpdateEventUseCase(eventRepository);
 export const cancelEventUseCase = new CancelEventUseCase(eventRepository);
 
 export const createEventController = new CreateEventController(
-  createEventUseCase
+  eventRepository
 );
 export const getTeacherEventsController = new GetTeacherEventsController(
-  getTeacherEventsUseCase
+  getTeacherEventsUseCase,
+  eventRepository
 );
 export const updateEventController = new UpdateEventController(
   updateEventUseCase

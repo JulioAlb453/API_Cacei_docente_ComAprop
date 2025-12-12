@@ -9,22 +9,22 @@ export class CreateStudentController {
       const body = req.body;
       console.log("[CreateStudentController] Procesando solicitud de creación.", JSON.stringify(body));
 
-      // Validaciones HTTP básicas - solo campos requeridos
-      if (!body.name || !body.tuition || !body.grade || !body.group) {
+      // Validación mejorada que no rechaza valores numéricos como 0
+      if (!body.name || body.tuition === undefined || body.tuition === null || 
+          body.grade === undefined || body.grade === null || !body.group) {
         res.status(400).json({ 
-          error: "Faltan campos obligatorios (name, tuition, grade, group)." 
+          error: "Faltan campos obligatorios (name, tuition, grade, group).",
+          received: { name: body.name, tuition: body.tuition, grade: body.grade, group: body.group }
         });
         return;
       }
 
-      // Generar email automático si no se proporciona
       const autoEmail = body.email || `${body.tuition}@estudiante.edu.mx`;
 
-      // Mapeo de request a DTO
       const studentData = {
         name: body.name,
         email: autoEmail,
-        password: body.password, // Opcional, el UseCase usa la matrícula si no se proporciona
+        password: body.password, 
         tuition: Number(body.tuition),
         grade: Number(body.grade),
         group: body.group
