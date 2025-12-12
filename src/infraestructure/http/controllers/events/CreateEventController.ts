@@ -15,6 +15,13 @@ export class CreateEventController {
         return;
       }
 
+      const organizer =
+        body.organizer ||
+        body.eventOrganizer ||
+        body.tutor ||
+        body.responsable ||
+        "";
+
       // Crear el evento directamente
       const event = new Event(
         0, // id se genera automáticamente
@@ -27,6 +34,7 @@ export class CreateEventController {
         body.start_time ? new Date(body.start_time) : new Date(),
         body.end_time ? new Date(body.end_time) : new Date(),
         body.teacher_id ? Number(body.teacher_id) : 1,
+        organizer,
         new Date(),
         new Date()
       );

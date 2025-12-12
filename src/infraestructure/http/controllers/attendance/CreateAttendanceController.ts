@@ -32,6 +32,9 @@ export class CreateAttendanceController {
         register_by
       );
 
+      // Garantizar que el participante exista en event_participants
+      await this.attendanceRepository.upsertParticipants(event_id, [student_id]);
+
       const savedRecord = await this.attendanceRepository.create(record);
 
       console.log("[CreateAttendanceController] Registro creado con ID:", savedRecord.id);
@@ -86,6 +89,10 @@ export class CreateAttendanceController {
         updated_at: new Date(),
       }));
 
+      // Asegurar que los participantes estén registrados
+      const studentIds = records.map((r: any) => Number(r.student_id));
+      await this.attendanceRepository.upsertParticipants(event_id, studentIds);
+
       const savedRecords = await this.attendanceRepository.bulkCreate(attendanceRecords);
 
       console.log("[CreateAttendanceController] Registros creados:", savedRecords.length);
@@ -123,6 +130,9 @@ export class CreateAttendanceController {
         return;
       }
 
+      // asegurar participante registrado
+      await this.attendanceRepository.upsertParticipants(parseInt(eventId), [parseInt(studentId)]);
+
       const updatedRecord = await this.attendanceRepository.updateStatus(
         parseInt(studentId),
         parseInt(eventId),
@@ -157,7 +167,9 @@ export class CreateAttendanceController {
   async getByEvent(req: Request, res: Response): Promise<void> {
     try {
       const { eventId } = req.params;
-      const records = await this.attendanceRepository.findByEventId(parseInt(eventId));
+      const records = await this.attendanceRepository.findParticipantsWithAttendance(
+        parseInt(eventId)
+      );
 
       res.status(200).json({
         success: true,

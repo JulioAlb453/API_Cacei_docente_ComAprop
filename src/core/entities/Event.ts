@@ -11,6 +11,7 @@ export class Event implements IEvent {
     public start_time: Date,
     public end_time: Date,
     public teacher_id: number,
+    public organizer: string,
     public created_at: Date,
     public updated_at: Date,
   ) {}
@@ -27,6 +28,7 @@ export class Event implements IEvent {
       updates.start_time || this.start_time,
       updates.end_time || this.end_time,
       updates.teacher_id || this.teacher_id,
+      updates.organizer || this.organizer,
       updates.created_at || this.created_at,
       updates.updated_at || this.updated_at,
     );

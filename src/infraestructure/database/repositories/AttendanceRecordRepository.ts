@@ -58,6 +58,75 @@ export class AttendanceRecordRepository {
     return await this.repository.find({ where: { event_id: eventId } });
   }
 
+  /**
+   * Obtiene los alumnos inscritos a un evento junto con su asistencia (si existe).
+   * Usa event_participants como fuente de inscripción y left join con attendance_records.
+   */
+  async findParticipantsWithAttendance(eventId: number): Promise<
+    Array<{
+      student_id: number;
+      event_id: number;
+      status: "present" | "absent" | "justified" | "late" | null;
+      observations: string | null;
+      name: string;
+      tuition: number;
+      grade: number;
+      group: string;
+    }>
+  > {
+    const sql = `
+      SELECT 
+        ep.student_id,
+        ep.event_id,
+        ar.status,
+        ar.observations,
+        s.name,
+        s.tuition,
+        s.grade,
+        s.\`group\`
+      FROM event_participants ep
+      INNER JOIN students s ON s.id = ep.student_id
+      LEFT JOIN attendance_records ar 
+        ON ar.student_id = ep.student_id 
+       AND ar.event_id = ep.event_id
+      WHERE ep.event_id = ?
+    `;
+
+    const results = await this.repository.query(sql, [eventId]);
+
+    return results.map((row: any) => ({
+      student_id: Number(row.student_id),
+      event_id: Number(row.event_id),
+      status: row.status || null,
+      observations: row.observations || null,
+      name: row.name,
+      tuition: Number(row.tuition),
+      grade: Number(row.grade),
+      group: row.group,
+    }));
+  }
+
+  /**
+   * Registra participantes en event_participants, evitando duplicados.
+   */
+  async upsertParticipants(eventId: number, studentIds: number[]): Promise<void> {
+    if (!studentIds || studentIds.length === 0) return;
+
+    const values = studentIds.map(() => "(?, ?)").join(", ");
+    const params: any[] = [];
+    studentIds.forEach((sid) => {
+      params.push(eventId, sid);
+    });
+
+    const sql = `
+      INSERT INTO event_participants (event_id, student_id)
+      VALUES ${values}
+      ON DUPLICATE KEY UPDATE student_id = student_id
+    `;
+
+    await this.repository.query(sql, params);
+  }
+
   async findAll(): Promise<Attendance_record[]> {
     return await this.repository.find();
   }
@@ -371,7 +440,17 @@ export class AttendanceRecordRepository {
       return await this.repository.save(record);
     }
 
-    return null;
+    // Si no existe, crear registro nuevo (upsert)
+    const newRecord = new Attendance_record(
+      0,
+      studentId,
+      eventId,
+      new Date(),
+      status,
+      "",
+      "docente",
+    );
+    return await this.repository.save(newRecord);
   }
 }
 

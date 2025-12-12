@@ -38,6 +38,9 @@ export class EventSchema {
   @Column({ type: "datetime", name: "end_time" })
   end_time!: Date;
 
+  @Column({ length: 200, nullable: true })
+  organizer!: string;
+
   @CreateDateColumn({ name: "created_at" })
   created_at!: Date;
 
