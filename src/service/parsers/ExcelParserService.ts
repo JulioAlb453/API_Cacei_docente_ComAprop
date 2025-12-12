@@ -26,7 +26,6 @@ export class ExcelParserService {
     try {
       const workbook = XLSX.read(buffer, { type: "buffer" });
       
-      // Usar la primera hoja
       const sheetName = workbook.SheetNames[0];
       if (!sheetName) {
         result.errors.push("El archivo Excel no contiene hojas de cálculo");
@@ -35,7 +34,6 @@ export class ExcelParserService {
 
       const worksheet = workbook.Sheets[sheetName];
       
-      // Convertir a JSON con encabezados
       const rows = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
         defval: ""
       });
@@ -45,10 +43,9 @@ export class ExcelParserService {
         return result;
       }
 
-      // Procesar cada fila
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        const rowNumber = i + 2; // +2 porque fila 1 es encabezado
+        const rowNumber = i + 2; 
 
         try {
           const student = this.mapRowToStudent(row, rowNumber);
@@ -68,14 +65,12 @@ export class ExcelParserService {
   }
 
   private mapRowToStudent(row: Record<string, any>, rowNumber: number): StudentFromFileDTO | null {
-    // Mapeo flexible de columnas (soporta español e inglés)
     const name = this.getColumnValue(row, ["nombre", "name", "Nombre", "Name", "NOMBRE"]);
     const email = this.getColumnValue(row, ["correo", "email", "Correo", "Email", "CORREO", "correo_electronico", "correo electronico"]);
     const tuition = this.getColumnValue(row, ["matricula", "tuition", "Matricula", "Tuition", "MATRICULA", "matrícula", "Matrícula"]);
     const grade = this.getColumnValue(row, ["grado", "grade", "Grado", "Grade", "GRADO", "semestre", "Semestre"]);
     const group = this.getColumnValue(row, ["grupo", "group", "Grupo", "Group", "GRUPO"]);
 
-    // Validar campos requeridos
     if (!name) {
       throw new Error("Falta el campo 'nombre'");
     }
@@ -86,7 +81,6 @@ export class ExcelParserService {
       throw new Error("Falta el campo 'matricula'");
     }
 
-    // Validar formato de email básico
     if (!this.isValidEmail(String(email))) {
       throw new Error(`Email inválido: ${email}`);
     }

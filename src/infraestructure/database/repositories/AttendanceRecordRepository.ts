@@ -74,7 +74,6 @@ export class AttendanceRecordRepository {
 
   // ============================================
   // MÉTODOS PARA MÉTRICAS DEL DASHBOARD
-  // ============================================
 
   /**
    * Obtener métricas globales de asistencia
@@ -87,7 +86,6 @@ export class AttendanceRecordRepository {
   }): Promise<AttendanceMetrics> {
     let queryBuilder = this.repository.createQueryBuilder("ar");
 
-    // Si hay filtros de grado o grupo, necesitamos hacer join con students
     if (filters?.grade || filters?.group) {
       queryBuilder = queryBuilder
         .innerJoin("students", "s", "ar.student_id = s.id");
@@ -245,7 +243,6 @@ export class AttendanceRecordRepository {
       "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
     ];
 
-    // Crear array con todos los meses, incluso los que no tienen datos
     const monthlyData: AttendanceByMonth[] = [];
     for (let i = 1; i <= 12; i++) {
       const found = results.find((r: any) => parseInt(r.month) === i);
@@ -277,7 +274,6 @@ export class AttendanceRecordRepository {
     late: number;
     totalEvents: number;
     totalStudents: number;
-    // Participación por categoría (promedio por evento)
     presentPerEvent: number;
     absentPerEvent: number;
     justifiedPerEvent: number;
@@ -331,7 +327,7 @@ export class AttendanceRecordRepository {
     const absent = parseInt(row.absent) || 0;
     const justified = parseInt(row.justified) || 0;
     const late = parseInt(row.late) || 0;
-    const totalEvents = parseInt(row.total_events) || 1; // Evitar división por 0
+    const totalEvents = parseInt(row.total_events) || 1; 
     const totalStudents = parseInt(row.total_students) || 0;
 
     return {

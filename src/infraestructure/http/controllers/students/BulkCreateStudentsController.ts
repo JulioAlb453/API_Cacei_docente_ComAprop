@@ -13,7 +13,6 @@ export class BulkCreateStudentsController {
     try {
       console.log("[BulkCreateStudentsController] Procesando carga masiva de estudiantes.");
 
-      // Verificar que se haya subido un archivo
       if (!req.file) {
         res.status(400).json({ 
           error: "No se ha proporcionado ningún archivo.",
@@ -25,10 +24,9 @@ export class BulkCreateStudentsController {
       const file = req.file;
       console.log(`[BulkCreateStudentsController] Archivo recibido: ${file.originalname}, tipo: ${file.mimetype}`);
 
-      // Validar tipo de archivo
       const allowedTypes = [
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-        "application/vnd.ms-excel" // .xls
+        "application/vnd.ms-excel" 
       ];
 
       if (!allowedTypes.includes(file.mimetype)) {
@@ -39,7 +37,6 @@ export class BulkCreateStudentsController {
         return;
       }
 
-      // Parsear el archivo Excel
       const parseResult = this.excelParser.parseBuffer(file.buffer);
 
       if (parseResult.errors.length > 0 && parseResult.students.length === 0) {
@@ -52,12 +49,10 @@ export class BulkCreateStudentsController {
 
       console.log(`[BulkCreateStudentsController] Estudiantes encontrados en archivo: ${parseResult.students.length}`);
 
-      // Crear estudiantes en lote
       const result = await this.bulkCreateStudentsUseCase.execute(parseResult.students);
 
       console.log(`[BulkCreateStudentsController] Resultado - Exitosos: ${result.successful}, Fallidos: ${result.failed}`);
 
-      // Responder con resultado
       res.status(201).json({
         message: `Se procesaron ${result.total} registros.`,
         summary: {

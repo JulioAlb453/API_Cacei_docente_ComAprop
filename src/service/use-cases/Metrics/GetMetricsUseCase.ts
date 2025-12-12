@@ -30,13 +30,10 @@ export interface DashboardMetrics {
 export class GetMetricsUseCase {
   constructor(private attendanceRepository: AttendanceRecordRepository) {}
 
-  /**
-   * Obtener todas las métricas del dashboard
-   */
+  /* Obtener todas las métricas del dashboard */
   async execute(filters?: MetricsFilters): Promise<DashboardMetrics> {
     console.log("[GetMetricsUseCase] Obteniendo métricas con filtros:", filters);
 
-    // Ejecutar todas las consultas en paralelo para mejor rendimiento
     const [summary, distribution, byGrade, byGroup, monthly] = await Promise.all([
       this.attendanceRepository.getGlobalMetrics({
         grade: filters?.grade,

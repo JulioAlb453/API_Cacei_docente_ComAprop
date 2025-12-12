@@ -17,7 +17,6 @@ export class Attendance_record implements IAttendance_record {
     public evidence_urls: string[] = []
   ) {}
 
-  // Gestion de Estado de Asistencia
   markAsPresent(arrivalTime?: Date): void {
     this.status = 'present';
     this.arrival_time = arrivalTime || new Date();

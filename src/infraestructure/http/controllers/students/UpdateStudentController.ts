@@ -16,7 +16,6 @@ export class UpdateStudentController {
         return;
       }
 
-      // Mapeo de request a DTO (solo campos que vienen en el body)
       const updates: {
         name?: string;
         email?: string;

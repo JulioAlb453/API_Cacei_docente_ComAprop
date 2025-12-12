@@ -21,7 +21,6 @@ export class UpdateStudentUseCase {
       throw new Error("Estudiante no encontrado para actualizar");
     }
 
-    // Aplicar cambios sobre la entidad existente
     const updatedStudent = new Student(
       currentStudent.id,
       updates.name || currentStudent.name,

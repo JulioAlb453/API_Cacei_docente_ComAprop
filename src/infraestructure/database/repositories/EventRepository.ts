@@ -17,16 +17,12 @@ export class EventRepository implements IEventRepository {
     return this.mapToDomain(savedSchema);
   }
 
-  // --- AQUÍ ESTABA EL ERROR, YA CORREGIDO ---
   async getById(id: number): Promise<Event | null> {
-    // 1. Usamos findOneBy para obtener UNO solo (o null)
-    // 2. Buscamos por 'id' (el ID del evento), NO por teacher_id
+  
     const schema = await this.repository.findOneBy({ id: id });
 
-    // 3. Si existe (no es null), lo mapeamos. Si no, devolvemos null.
     return schema ? this.mapToDomain(schema) : null;
   }
-  // ------------------------------------------
 
   async update(event: Event): Promise<Event> {
     const schema = this.mapToPersistence(event);
@@ -44,7 +40,6 @@ export class EventRepository implements IEventRepository {
   }
 
   async getByTeacherId(teacherId: number): Promise<Event[]> {
-    // Aquí sí está bien buscar por teacher_id y usar find (array)
     const schemas = await this.repository.findBy({ teacher_id: teacherId });
     return schemas.map((s) => this.mapToDomain(s));
   }

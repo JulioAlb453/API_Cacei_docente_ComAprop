@@ -13,7 +13,7 @@ import {
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB máximo
+    fileSize: 5 * 1024 * 1024, 
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
@@ -30,7 +30,6 @@ const upload = multer({
 
 const studentRouter = Router();
 
-// POST /students - Crear estudiante individual (docente registra uno por uno)
 studentRouter.post("/", createStudentController.run.bind(createStudentController));
 
 // POST /students/bulk - Carga masiva desde archivo Excel (docente sube archivo)

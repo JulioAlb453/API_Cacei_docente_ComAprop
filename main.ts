@@ -14,7 +14,6 @@ async function bootstrap() {
     console.log("Conexión a Base de Datos establecida exitosamente.");
     const app = express();
 
-    // Habilitar CORS para permitir peticiones desde el frontend
     app.use(cors({
       origin: ['http://localhost:5173', 'http://localhost:3000'],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -29,10 +28,10 @@ async function bootstrap() {
     app.use("/cacei/metrics", metricsRouter);
     app.use("/cacei/attendance", attendanceRouter);
 
-    const PORT = 3002; // Puerto fijo para evitar conflictos
+    const PORT = 3002;
     app.listen(PORT, () => {
-      console.log(`🚀 Servidor CACEI corriendo en: http://localhost:${PORT}`);
-      console.log(`📊 Rutas disponibles:`);
+      console.log(` Servidor CACEI corriendo en: http://localhost:${PORT}`);
+      console.log(` Rutas disponibles:`);
       console.log(`   - /cacei/events`);
       console.log(`   - /cacei/students`);
       console.log(`   - /cacei/metrics`);

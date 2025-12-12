@@ -32,10 +32,9 @@ export class BulkCreateStudentsUseCase {
 
     for (let i = 0; i < students.length; i++) {
       const studentData = students[i];
-      const rowNumber = i + 2; // +2 porque la fila 1 es el encabezado
+      const rowNumber = i + 2; 
 
       try {
-        // Validar datos requeridos
         if (!studentData.name || !studentData.email || !studentData.tuition) {
           result.errors.push({
             row: rowNumber,
@@ -46,7 +45,6 @@ export class BulkCreateStudentsUseCase {
           continue;
         }
 
-        // Generar password por defecto (matrícula como string)
         const defaultPassword = studentData.tuition.toString();
         const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 

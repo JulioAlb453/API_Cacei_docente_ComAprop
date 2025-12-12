@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 export interface CreateStudentDTO {
   name: string;
   email: string;
-  password?: string; // Opcional, si no viene se usa la matrícula
+  password?: string; 
   tuition: number;
   grade: number;
   group: string;
@@ -15,7 +15,6 @@ export class CreateStudentUseCase {
   constructor(private studentRepository: IStudentRepository) {}
 
   async execute(data: CreateStudentDTO): Promise<Student> {
-    // Si no se proporciona password, usar la matrícula como default
     const rawPassword = data.password || data.tuition.toString();
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
     

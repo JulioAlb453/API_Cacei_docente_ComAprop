@@ -8,19 +8,15 @@ import { AttendanceRecordSchema } from "../../../database/schemas/AttendanceReco
 export class SeedAttendanceController {
   constructor(private attendanceRepository: AttendanceRecordRepository) {}
 
-  /**
-   * POST /attendance/seed - Generar datos de prueba para las gráficas
-   */
+  /** POST /attendance/seed - Generar datos de prueba para las gráficas*/
   async seed(req: Request, res: Response): Promise<void> {
     try {
       console.log("[SeedAttendanceController] Generando datos de prueba...");
 
-      // Obtener estudiantes existentes de la BD
       const studentRepository = AppDataSource.getRepository(StudentSchema);
       let students = await studentRepository.find();
 
       if (students.length === 0) {
-        // Si no hay estudiantes, crear algunos de prueba
         console.log("[SeedAttendanceController] Creando estudiantes de prueba...");
         
         const testStudents = [];
@@ -47,7 +43,6 @@ export class SeedAttendanceController {
 
       console.log(`[SeedAttendanceController] Total estudiantes: ${students.length}`);
 
-      // Crear eventos de prueba si no existen
       const eventRepository = AppDataSource.getRepository(EventSchema);
       let events = await eventRepository.find();
 
@@ -117,13 +112,11 @@ export class SeedAttendanceController {
         events = await eventRepository.find();
       }
 
-      // Generar registros de asistencia
       console.log("[SeedAttendanceController] Generando registros de asistencia...");
       
       const attendanceRecords: any[] = [];
       const statuses: ("present" | "absent" | "justified" | "late")[] = ["present", "absent", "justified", "late"];
       
-      // Pesos para generar distribución realista
       const statusWeights = [0.7, 0.15, 0.1, 0.05];
 
       for (const event of events) {
@@ -159,13 +152,11 @@ export class SeedAttendanceController {
         }
       }
 
-      // Guardar registros
       if (attendanceRecords.length > 0) {
         await this.attendanceRepository.bulkCreate(attendanceRecords);
         console.log(`[SeedAttendanceController] ${attendanceRecords.length} registros de asistencia creados`);
       }
 
-      // Obtener métricas para verificar
       const metrics = await this.attendanceRepository.getGlobalMetrics();
 
       res.status(201).json({
